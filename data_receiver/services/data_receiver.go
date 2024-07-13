@@ -8,15 +8,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var kafkaTopic string = "obudata"
-
 type DataReceiver struct {
 	Conn *websocket.Conn
 	Prod DataProducer
 }
 
 func NewDataReceiver() (*DataReceiver, error) {
-	p, err := NewKafkaProducer()
+	p, err := NewKafkaProducer("obudata")
 	if err != nil {
 		return nil, err
 	}

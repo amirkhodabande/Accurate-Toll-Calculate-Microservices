@@ -1,6 +1,9 @@
 package services
 
-import "distance_calculator/types"
+import (
+	"distance_calculator/types"
+	"math"
+)
 
 type Calculator interface {
 	CalculateDistance(types.OBU) (float64, error)
@@ -14,6 +17,7 @@ func NewCalculatorService() *CalculatorService {
 }
 
 func (s *CalculatorService) CalculateDistance(data types.OBU) (float64, error) {
-	// TODO: OBU should have 2 location: start -> destination
-	return 0.0, nil
+	return math.Sqrt(
+		math.Pow(data.Lat-data.DestinationLat, 2) + math.Pow(data.Long-data.DestinationLong, 2),
+	), nil
 }

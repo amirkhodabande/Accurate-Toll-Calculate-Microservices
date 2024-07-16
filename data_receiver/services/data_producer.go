@@ -44,13 +44,13 @@ func NewKafkaProducer(topic string) (*KafkaProducer, error) {
 }
 
 func (p *KafkaProducer) ProduceData(data types.OBU) error {
-	_, err := json.Marshal(data)
+	value, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
 	return p.producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: kafka.PartitionAny},
-		Value:          []byte("test producing"),
+		Value:          value,
 	}, nil)
 }

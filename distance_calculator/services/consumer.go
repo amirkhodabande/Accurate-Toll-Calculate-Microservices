@@ -1,6 +1,7 @@
 package services
 
 import (
+	"distance_calculator/services/api"
 	"distance_calculator/types"
 	"encoding/json"
 	"fmt"
@@ -10,12 +11,13 @@ import (
 )
 
 type KafkaConsumer struct {
-	consumer   *kafka.Consumer
-	isRunning  bool
-	calculator Calculator
+	consumer         *kafka.Consumer
+	isRunning        bool
+	calculator       Calculator
+	aggregatorClient *api.Aggregator
 }
 
-func NewKafkaConsumer(topic string, calculator Calculator) (*KafkaConsumer, error) {
+func NewKafkaConsumer(topic string, calculator Calculator, aggregator *api.Aggregator) (*KafkaConsumer, error) {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost",
 		"group.id":          "myGroup",
@@ -32,8 +34,9 @@ func NewKafkaConsumer(topic string, calculator Calculator) (*KafkaConsumer, erro
 	}
 
 	return &KafkaConsumer{
-		consumer:   c,
-		calculator: calculator,
+		consumer:         c,
+		calculator:       calculator,
+		aggregatorClient: aggregator,
 	}, nil
 }
 
@@ -63,6 +66,16 @@ func (c *KafkaConsumer) readMessageLoop() {
 		distance, err := c.calculator.CalculateDistance(data)
 		if err != nil {
 			fmt.Println("error in calculating distance:", err.Error())
+			continue
+		}
+
+		req := types.Distance{
+			Value: distance,
+			Unix:  time.Now().Unix(),
+			OBUID: data.OBUID,
+		}
+		if _, err = c.aggregatorClient.AggregateInvoice(req); err != nil {
+			fmt.Println("error in aggregating distance:", err.Error())
 			continue
 		}
 

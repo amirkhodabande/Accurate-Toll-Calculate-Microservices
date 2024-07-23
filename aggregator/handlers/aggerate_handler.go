@@ -34,9 +34,3 @@ func (h *AggregateHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	writeJson(w, http.StatusOK, map[string]string{"success": "true"})
 }
-
-func writeJson(w http.ResponseWriter, status int, v any) error {
-	w.WriteHeader(status)
-	w.Header().Add("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(v)
-}

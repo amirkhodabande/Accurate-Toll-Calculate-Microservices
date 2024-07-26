@@ -1,11 +1,13 @@
 package services
 
 import (
-	"distance_calculator/services/api"
 	"distance_calculator/types"
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"aggregator/services/client"
+	aggrTypes "aggregator/types"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
@@ -14,10 +16,10 @@ type KafkaConsumer struct {
 	consumer         *kafka.Consumer
 	isRunning        bool
 	calculator       Calculator
-	aggregatorClient *api.Aggregator
+	aggregatorClient client.Aggregator
 }
 
-func NewKafkaConsumer(topic string, calculator Calculator, aggregator *api.Aggregator) (*KafkaConsumer, error) {
+func NewKafkaConsumer(topic string, calculator Calculator, aggregator client.Aggregator) (*KafkaConsumer, error) {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost",
 		"group.id":          "myGroup",
@@ -69,7 +71,7 @@ func (c *KafkaConsumer) readMessageLoop() {
 			continue
 		}
 
-		req := types.Distance{
+		req := aggrTypes.Distance{
 			Value: distance,
 			Unix:  time.Now().Unix(),
 			OBUID: data.OBUID,

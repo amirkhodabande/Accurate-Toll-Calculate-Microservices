@@ -1,16 +1,16 @@
 package main
 
 import (
+	"aggregator/services/client"
 	"distance_calculator/services"
-	"distance_calculator/services/api"
 	"log"
 )
 
 func main() {
 	calculatorService := services.NewCalculatorService()
-	aggregatorClient := api.NewAggregator()
 
-	KafkaConsumer, err := services.NewKafkaConsumer("obudata", calculatorService, aggregatorClient)
+	httpInvoiceAggregator := client.NewHTTPAggregator()
+	KafkaConsumer, err := services.NewKafkaConsumer("obudata", calculatorService, httpInvoiceAggregator)
 	if err != nil {
 		log.Fatal(err)
 	}

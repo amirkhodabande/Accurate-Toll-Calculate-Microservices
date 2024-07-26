@@ -6,10 +6,6 @@ import (
 	"aggregator/types"
 )
 
-type Aggregator interface {
-	AggregateDistance(types.Distance) error
-}
-
 type InvoiceAggregator struct {
 	store store.Storer
 }

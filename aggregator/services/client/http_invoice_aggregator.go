@@ -1,19 +1,19 @@
-package api
+package client
 
 import (
+	"aggregator/types"
 	"bytes"
-	"distance_calculator/types"
 	"encoding/json"
 	"net/http"
 )
 
-type Aggregator struct{}
+type HTTPInvoiceAggregator struct{}
 
-func NewAggregator() *Aggregator {
-	return &Aggregator{}
+func NewHTTPAggregator() *HTTPInvoiceAggregator {
+	return &HTTPInvoiceAggregator{}
 }
 
-func (a *Aggregator) AggregateInvoice(distance types.Distance) (*http.Response, error) {
+func (a *HTTPInvoiceAggregator) AggregateInvoice(distance types.Distance) (*http.Response, error) {
 	payload, err := json.Marshal(distance)
 	if err != nil {
 		return nil, err

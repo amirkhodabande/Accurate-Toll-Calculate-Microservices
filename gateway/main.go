@@ -8,8 +8,9 @@ import (
 )
 
 func main() {
-	httpInvoiceGetterClient := client.NewHTTPInvoiceGetter()
-	invoiceHandler := handlers.NewInvoiceHandler(httpInvoiceGetterClient)
+	// httpInvoiceGetterClient := client.NewHTTPInvoiceGetter()
+	grpcInvoiceGetterClient := client.NewGRPCInvoiceGetter()
+	invoiceHandler := handlers.NewInvoiceHandler(grpcInvoiceGetterClient)
 
 	fmt.Println("http transport is running...")
 	http.HandleFunc("/invoice", handlers.MakeApiFunc(invoiceHandler.Handle))

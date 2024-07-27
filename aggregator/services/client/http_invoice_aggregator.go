@@ -4,6 +4,7 @@ import (
 	"aggregator/types"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -13,7 +14,7 @@ func NewHTTPAggregator() *HTTPInvoiceAggregator {
 	return &HTTPInvoiceAggregator{}
 }
 
-func (a *HTTPInvoiceAggregator) AggregateInvoice(distance types.Distance) (*http.Response, error) {
+func (a *HTTPInvoiceAggregator) AggregateInvoice(distance types.Distance) (*types.AggregationClientResponse, error) {
 	payload, err := json.Marshal(distance)
 	if err != nil {
 		return nil, err
@@ -26,10 +27,13 @@ func (a *HTTPInvoiceAggregator) AggregateInvoice(distance types.Distance) (*http
 		return nil, err
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	_, err = http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp, nil
+	return &types.AggregationClientResponse{
+		Success: true,
+		Msg:     fmt.Sprintf("Aggregating: %.2f", distance.Value),
+	}, nil
 }

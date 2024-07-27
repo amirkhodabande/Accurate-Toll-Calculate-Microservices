@@ -8,6 +8,7 @@ import (
 
 	"aggregator/handlers"
 	pb "aggregator/proto"
+	pbInvoicer "aggregator/proto/invoicer"
 	"aggregator/services/grpc_server"
 	"aggregator/store"
 
@@ -23,8 +24,13 @@ func main() {
 			log.Fatalf("failed to listen: %v", err)
 		}
 		s := grpc.NewServer()
-		grpcServer := grpc_server.NewGRPCServer(storage)
-		pb.RegisterAggregatorServer(s, grpcServer)
+
+		aggregatorGrpcServer := grpc_server.NewAggregatorGRPCServer(storage)
+		pb.RegisterAggregatorServer(s, aggregatorGrpcServer)
+
+		invoicerGrpcServer := grpc_server.NewInvoicerGRPCServer(storage)
+		pbInvoicer.RegisterInvoicerServer(s, invoicerGrpcServer)
+
 		log.Printf("server listening at %v", lis.Addr())
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)

@@ -10,18 +10,18 @@ import (
 	"aggregator/types"
 )
 
-type GRPCServer struct {
+type AggregatorGRPCServer struct {
 	pb.UnimplementedAggregatorServer
 	store store.Storer
 }
 
-func NewGRPCServer(store store.Storer) *GRPCServer {
-	return &GRPCServer{
+func NewAggregatorGRPCServer(store store.Storer) *AggregatorGRPCServer {
+	return &AggregatorGRPCServer{
 		store: store,
 	}
 }
 
-func (s *GRPCServer) AggregateInvoice(ctx context.Context, in *pb.AggregateRequest) (*pb.AggregateReply, error) {
+func (s *AggregatorGRPCServer) AggregateInvoice(ctx context.Context, in *pb.AggregateRequest) (*pb.AggregateReply, error) {
 	log.Printf("Received: %v", in.GetValue())
 	invoiceAggregatorService := services.NewInvoiceAggregator(s.store)
 

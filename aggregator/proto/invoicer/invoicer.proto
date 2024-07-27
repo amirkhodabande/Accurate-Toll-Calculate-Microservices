@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "grpc/proto/invoicer";
+option java_multiple_files = true;
+option java_package = "io.grpc.proto.aggregator";
+option java_outer_classname = "ProtoAggregator";
+
+package proto;
+
+service Invoicer {
+  rpc GetInvoice(GetInvoiceRequest) returns (GetInvoiceReply) {}
+}
+
+message GetInvoiceRequest {
+  int64 OBUID = 1;
+}
+
+message GetInvoiceReply {
+  int64 OBUID = 1;
+	double Distance = 2;
+	double Amount = 3;
+}

@@ -9,8 +9,10 @@ import (
 func main() {
 	calculatorService := services.NewCalculatorService()
 
-	httpInvoiceAggregator := client.NewHTTPAggregator()
-	KafkaConsumer, err := services.NewKafkaConsumer("obudata", calculatorService, httpInvoiceAggregator)
+	// httpInvoiceAggregator := client.NewHTTPAggregator()
+	grpcInvoiceAggregator := client.NewGRPCAggregator()
+
+	KafkaConsumer, err := services.NewKafkaConsumer("obudata", calculatorService, grpcInvoiceAggregator)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -28,7 +28,5 @@ func (h *InvoiceHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("internal server error")
 	}
 
-	writeJson(w, http.StatusOK, res)
-
-	return nil
+	return writeJson(w, http.StatusOK, res)
 }

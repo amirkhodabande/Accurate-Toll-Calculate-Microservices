@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"aggregator/handlers/custom_errors"
 	"aggregator/services"
 	"aggregator/store"
 	"net/http"
@@ -17,20 +18,18 @@ func NewInvoiceHandler(store store.Storer) *InvoiceHandler {
 	}
 }
 
-func (h *InvoiceHandler) Handle(w http.ResponseWriter, r *http.Request) {
+func (h *InvoiceHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 	invoiceProcessor := services.NewInvoiceProcessor(h.store)
-	
+
 	id, err := strconv.Atoi(r.URL.Query().Get("obu"))
 	if err != nil {
-		writeJson(w, http.StatusBadRequest, map[string]any{"success": false, "message": "obu id is missing"})
-		return
+		return custom_errors.BadReq()
 	}
 
 	invoice, err := invoiceProcessor.CalculateInvoice(id)
 	if err != nil {
-		writeJson(w, http.StatusInternalServerError, map[string]any{"success": false, "message": err.Error()})
-		return
+		return custom_errors.Internal(err.Error())
 	}
 
-	writeJson(w, http.StatusOK, map[string]any{"success": true, "data": invoice})
+	return writeJson(w, http.StatusOK, map[string]any{"success": true, "data": invoice})
 }

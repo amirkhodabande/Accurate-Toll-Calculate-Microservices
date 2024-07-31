@@ -41,8 +41,8 @@ func main() {
 	invoiceHandler := handlers.NewInvoiceHandler(storage)
 
 	fmt.Println("http transport is running...")
-	http.HandleFunc("/aggregate", aggregateHandler.Handle)
-	http.HandleFunc("/invoice", invoiceHandler.Handle)
+	http.HandleFunc("/aggregate", handlers.MakeApiFunc("POST", aggregateHandler.Handle))
+	http.HandleFunc("/invoice", handlers.MakeApiFunc("GET", invoiceHandler.Handle))
 	http.ListenAndServe(":3000", nil)
 
 	fmt.Println("aggregator working")

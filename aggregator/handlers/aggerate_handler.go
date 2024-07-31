@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"aggregator/handlers/custom_errors"
 	"aggregator/services"
 	"aggregator/store"
 	"aggregator/types"
@@ -18,19 +19,17 @@ func NewAggregateHandler(store store.Storer) *AggregateHandler {
 	}
 }
 
-func (h *AggregateHandler) Handle(w http.ResponseWriter, r *http.Request) {
+func (h *AggregateHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 	invoiceAggregatorService := services.NewInvoiceAggregator(h.store)
 
 	var distance types.Distance
 	if err := json.NewDecoder(r.Body).Decode(&distance); err != nil {
-		writeJson(w, http.StatusBadRequest, map[string]string{"error": "bad request"})
-		return
+		return custom_errors.BadReq()
 	}
 
 	if err := invoiceAggregatorService.AggregateDistance(distance); err != nil {
-		writeJson(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-		return
+		return custom_errors.Internal("")
 	}
 
-	writeJson(w, http.StatusOK, map[string]string{"success": "true"})
+	return writeJson(w, http.StatusOK, map[string]string{"success": "true"})
 }

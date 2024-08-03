@@ -1,4 +1,3 @@
-# TODO: kafka should be shared between services
 version: '2'
 services:
   zookeeper:
